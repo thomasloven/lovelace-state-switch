@@ -29,7 +29,7 @@ class StateSwitch extends Polymer.Element{
       this.currentCard = this.cards[hass.user.name] || this.cards[this.config.default];
     } else {
       let state = hass.states[this.config.entity];
-      this.currentCard = (state)?this.cards[state.state]:null || this.cards[this.config.default];
+      this.currentCard = ((state)?this.cards[state.state]:null) || this.cards[this.config.default];
     }
 
     if(this.currentCard != lastCard) {
