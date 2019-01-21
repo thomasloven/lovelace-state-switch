@@ -8,18 +8,15 @@ class StateSwitch extends LitElement {
     this.cards = {}
 
     for(var k in this.config.states) {
-      const conf = this.config.states[k];
-      let tag = conf.type;
-      tag = tag.startsWith("custom:")? tag.substr(7) : `hui-${tag}-card`;
-
-      const card = this.cards[k] = document.createElement(tag);
-      card.setConfig(conf);
-
-      this.cardSize = Math.max(this.cardSize, card.getCardSize());
+      this.cards[k] = window.cardTools.createCard(this.config.states[k]);
+      this.cardSize = Math.max(this.cardSize, this.cards[k].getCardSize());
     }
 
-    this.idCard = document.createElement("ha-card");
-    this.idCard.innerHTML = `<h2>${window.cardTools.deviceID}</h2>`;
+    this.idCard = window.cardTools.createCard({
+      type: "markdown",
+      title: "Device ID",
+      content: `Your device id is: \`${window.cardTools.deviceID}\``,
+    });
   }
 
   render() {
@@ -33,12 +30,17 @@ class StateSwitch extends LitElement {
 
     const lastCard = this.currentCard;
     if (this.config.entity === 'user') {
-      this.currentCard = this.cards[hass.user.name] || this.cards[this.config.default];
+      this.currentCard = this.cards[hass.user.name]
+        || this.cards[this.config.default];
     } else if(this.config.entity == 'browser') {
-      this.currentCard = this.cards[window.cardTools.deviceID] || (this.config.default)?this.cards[this.config.default]:this.idCard;
+      this.currentCard = this.cards[window.cardTools.deviceID]
+        || ((this.config.default)
+          ? this.cards[this.config.default]
+          : this.idCard);
     } else {
       let state = hass.states[this.config.entity];
-      this.currentCard = ((state)?this.cards[state.state]:null) || this.cards[this.config.default];
+      this.currentCard = ((state)?this.cards[state.state]:null)
+        || this.cards[this.config.default];
     }
 
     if(this.currentCard != lastCard) this.requestUpdate();
