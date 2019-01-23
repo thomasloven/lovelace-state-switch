@@ -3,15 +3,14 @@ state-switch
 
 Allows you to display different cards depending on the state of an entity, the currently logged in user or the current device-browser combination
 
-This card requires [card-tools](https://github.com/thomasloven/lovelace-card-tools) to be installed.
-
 ![state-switch mov](https://user-images.githubusercontent.com/1299821/48923691-05479700-eeb1-11e8-8c8b-91ea14cfecf1.gif)
 
 > Note in the animation above that the two browser windows have two different users logged in, which changes the rightmost card.
 
 ## Installation
+This card requires [card-tools](https://github.com/thomasloven/lovelace-card-tools) to be installed.
 
-Please read and follow this guide: [Lovelace Plugins](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins)
+For installation instructions [see this guide](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins).
 
 ## Options
 
