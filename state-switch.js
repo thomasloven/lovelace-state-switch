@@ -18,6 +18,10 @@ class StateSwitch extends cardTools.litElement() {
       title: "Device ID",
       content: `Your device id is: \`${cardTools.deviceID()}\``,
     });
+
+    if(config.entity === 'hash') {
+      window.addEventListener("location-changed", () => this.updateCard());
+    }
   }
 
   render() {
@@ -26,9 +30,7 @@ class StateSwitch extends cardTools.litElement() {
     `;
   }
 
-  set hass(hass) {
-    if(!hass) return;
-
+  updateCard() {
     const lastCard = this.currentCard;
     if (this.config.entity === 'user') {
       this.currentCard = this.cards[hass.user.name]
@@ -38,6 +40,9 @@ class StateSwitch extends cardTools.litElement() {
         || ((this.config.default)
           ? this.cards[this.config.default]
           : this.idCard);
+    } else if(this.config.entity == 'hash') {
+        this.currentCard = this.cards[location.hash.substr(1)]
+          || this.cards[this.config.default];
     } else {
       let state = hass.states[this.config.entity];
       this.currentCard = ((state)?this.cards[state.state]:null)
@@ -45,6 +50,12 @@ class StateSwitch extends cardTools.litElement() {
     }
 
     if(this.currentCard != lastCard) this.requestUpdate();
+  }
+
+  set hass(hass) {
+    if(!hass) return;
+
+    this.updateCard();
 
     for(var k in this.cards)
       this.cards[k].hass = hass;

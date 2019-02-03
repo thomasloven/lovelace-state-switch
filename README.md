@@ -17,11 +17,11 @@ For installation instructions [see this guide](https://github.com/thomasloven/ha
 | Name | Type | Default | Description
 | ---- | ---- | ------- | -----------
 | type | string | **Required** | `custom:state-switch`
-| entity | string | **Required** | Controlling entity id, `user` or `browser`
+| entity | string | **Required** | Controlling entity id, `hash`, `user` or `browser`
 | states | object | **Required** | Map of states to cards to display
 | default | string | none | State to use as default
 
-The `entity` parameter can take three different types of value
+The `entity` parameter can take four different types of value
 
 ### Entity\_id
 If the `entity` parameter is set to an entity id, which card is displayed will depend on the state of that entity.
@@ -70,6 +70,48 @@ Note that the words `on` and `off` are magic in yaml, so if the entity is e.g. a
             type: markdown
             content:>
               Light is off
+```
+
+### hash
+If the `entity` parameter is set to `hash`, which card is displayed will depend on the "hash" part of the current URL - i.e. whatever comes after an optional `#` symbol in the current page URL.
+
+This allows for controlling the view on a browser-window to browser-window basis, and without needing a controlling entity.
+
+```yaml
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: entity-button
+            entity: light.my_dummy
+            tap_action:
+              action: navigate
+              navigation_path: "#p1"
+          - type: entity-button
+            entity: light.my_dummy
+            tap_action:
+              action: navigate
+              navigation_path: "#p2"
+          - type: entity-button
+            entity: light.my_dummy
+            tap_action:
+              action: navigate
+              navigation_path: "#p2"
+      - type: custom:state-switch
+        entity: hash
+        default: p1
+        states:
+          p1:
+            type: markdown
+            content: |
+              # Page 1
+          p2:
+            type: markdown
+            content: |
+              # Page 2
+          p3:
+            type: markdown
+            content: |
+              # Page 3
 ```
 
 ### user
