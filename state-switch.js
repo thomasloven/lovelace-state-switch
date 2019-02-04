@@ -31,6 +31,8 @@ class StateSwitch extends cardTools.litElement() {
   }
 
   updateCard() {
+    const hass = this._hass;
+    if(!hass) return;
     const lastCard = this.currentCard;
     if (this.config.entity === 'user') {
       this.currentCard = this.cards[hass.user.name]
@@ -54,6 +56,7 @@ class StateSwitch extends cardTools.litElement() {
 
   set hass(hass) {
     if(!hass) return;
+    this._hass = hass;
 
     this.updateCard();
 
