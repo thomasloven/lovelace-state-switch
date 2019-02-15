@@ -38,7 +38,7 @@ class StateSwitch extends cardTools.litElement() {
       this.currentCard = this.cards[hass.user.name]
         || this.cards[this.config.default];
     } else if(this.config.entity == 'browser') {
-      this.currentCard = this.cards[cardTools.deviceID]
+      this.currentCard = this.cards[cardTools.deviceID()]
         || ((this.config.default)
           ? this.cards[this.config.default]
           : this.idCard);
