@@ -16,7 +16,7 @@ class StateSwitch extends cardTools.litElement() {
     this.idCard = cardTools.createCard({
       type: "markdown",
       title: "Device ID",
-      content: `Your device id is: \`${cardTools.deviceID()}\``,
+      content: `Your device id is: \`${cardTools.deviceID}\``,
     });
 
     if(config.entity === 'hash') {
@@ -38,7 +38,7 @@ class StateSwitch extends cardTools.litElement() {
       this.currentCard = this.cards[hass.user.name]
         || this.cards[this.config.default];
     } else if(this.config.entity == 'browser') {
-      this.currentCard = this.cards[cardTools.deviceID()]
+      this.currentCard = this.cards[cardTools.deviceID]
         || ((this.config.default)
           ? this.cards[this.config.default]
           : this.idCard);
