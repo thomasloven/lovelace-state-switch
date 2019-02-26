@@ -1,8 +1,9 @@
 customElements.whenDefined('card-tools').then(() => {
-class StateSwitch extends cardTools.litElement() {
+const cardTools = customElements.get('card-tools');
+class StateSwitch extends cardTools.LitElement {
 
   setConfig(config) {
-    cardTools.checkVersion(0.3);
+    cardTools.checkVersion(0.4);
     this.config = config;
 
     this.cardSize = 1;
@@ -16,7 +17,7 @@ class StateSwitch extends cardTools.litElement() {
     this.idCard = cardTools.createCard({
       type: "markdown",
       title: "Device ID",
-      content: `Your device id is: \`${cardTools.deviceID()}\``,
+      content: `Your device id is: \`${cardTools.deviceID}\``,
     });
 
     if(config.entity === 'hash') {
@@ -25,7 +26,7 @@ class StateSwitch extends cardTools.litElement() {
   }
 
   render() {
-    return cardTools.litHtml()`
+    return cardTools.LitHtml`
     <div id="root">${this.currentCard}</div>
     `;
   }
@@ -38,7 +39,7 @@ class StateSwitch extends cardTools.litElement() {
       this.currentCard = this.cards[hass.user.name]
         || this.cards[this.config.default];
     } else if(this.config.entity == 'browser') {
-      this.currentCard = this.cards[cardTools.deviceID()]
+      this.currentCard = this.cards[cardTools.deviceID]
         || ((this.config.default)
           ? this.cards[this.config.default]
           : this.idCard);
