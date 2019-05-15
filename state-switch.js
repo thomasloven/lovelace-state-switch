@@ -51,7 +51,12 @@ class StateSwitch extends cardTools.LitElement {
       this.currentCard = ((state)?this.cards[state.state]:null)
         || this.cards[this.config.default];
     }
-
+    
+    if (!this.currentCard) {
+      this.style.margin = 0;
+    } else {
+      this.style.margin = undefined;
+    }
     if(this.currentCard != lastCard) this.requestUpdate();
   }
 
