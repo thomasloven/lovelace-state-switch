@@ -1,29 +1,50 @@
 state-switch
 ============
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-Allows you to display different cards depending on the state of an entity, the currently logged in user or the current device-browser combination
+Dynamically replace lovelace cards depending on occasion.
 
 ![state-switch mov](https://user-images.githubusercontent.com/1299821/48923691-05479700-eeb1-11e8-8c8b-91ea14cfecf1.gif)
 
 > Note in the animation above that the two browser windows have two different users logged in, which changes the rightmost card.
 
-## Installation
-This card requires [card-tools](https://github.com/thomasloven/lovelace-card-tools) to be installed.
-
 For installation instructions [see this guide](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins).
 
+Install `state-switch.js` as a `module`.
+
+```yaml
+resources:
+  - url: /local/state-switch.js
+    type: module
+```
+
+## Usage
+
+```yaml
+type: custom:state-switch
+entity: <entity>
+default: <default>
+states:
+  <state 1>:
+    <card 1>
+  <state 2>:
+    <card 2>
+  ...
+```
+
+When the state of `<entity>` is `<state 1>`, `<card 1>` will be displayed, when it's `<state 2>`, `<card 2>` will be displayed.
+
+If the state of `<entity>` doesn't match any `<state>`, the `<card>` for the `<default>` state will be displayed.
+
 ## Options
+- `<entity>` **Required** An entity id or `hash`, `user`, `deviceID`
+- `<default>` State to use as default fallback
+- `<state N>` The state to match
+- `<card N>` Lovelace card configuration
 
-| Name | Type | Default | Description
-| ---- | ---- | ------- | -----------
-| type | string | **Required** | `custom:state-switch`
-| entity | string | **Required** | Controlling entity id, `hash`, `user` or `browser`
-| states | object | **Required** | Map of states to cards to display
-| default | string | none | State to use as default
+## State matching
 
-The `entity` parameter can take four different types of value
-
-### Entity\_id
+### entity\_id
 If the `entity` parameter is set to an entity id, which card is displayed will depend on the state of that entity.
 
 ```yaml
@@ -143,16 +164,14 @@ If the `entity` parameter is set to `user`, which card is displayed will depend 
               ## Unknown user
 ```
 
-### browser
-If the `entity` parameter is set to `browser`, which card is displayed will depend on the device-browser combination which is currently displaying the page.
+### deviceID
+If the `entity` parameter is set to `deviceID`, which card is displayed will depend on the device-browser combination which is currently displaying the page.
 
-This "browser ID" is in the form of a 16 character string with a dash in the middle and is unique, random and persistent for the browser.
-
-If the `default` parameter is **not** set, the default behavior will be to display a small card containing the browser ID.
+See [browser_mod](https://github.com/thomasloven/hass-browser_mod#devices) for a description on how deviceIDs work.
 
 ```yaml
       - type: custom:state-switch
-        entity: browser
+        entity: deviceID
         states:
           '9c2aaf6f-ed26e3c1':
             type: markdown
@@ -163,3 +182,10 @@ If the `default` parameter is **not** set, the default behavior will be to displ
             content: >
               Mobile
 ```
+
+## A few tips
+
+- To replace more than one card at a time, use e.g. [`vertical-stack`](https://www.home-assistant.io/lovelace/vertical-stack/), [`horizontal-stack`](https://www.home-assistant.io/lovelace/horizontal-stack/) or [`layout-card`](https://github.com/thomasloven/lovelace-layout-card).
+
+---
+<a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
