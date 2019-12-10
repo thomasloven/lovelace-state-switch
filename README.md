@@ -37,7 +37,7 @@ When the state of `<entity>` is `<state 1>`, `<card 1>` will be displayed, when 
 If the state of `<entity>` doesn't match any `<state>`, the `<card>` for the `<default>` state will be displayed.
 
 ## Options
-- `<entity>` **Required** An entity id or `hash`, `user`, `deviceID`
+- `<entity>` **Required** An entity id or `hash`, `user`, `group`, `deviceID`
 - `<default>` State to use as default fallback
 - `<state N>` The state to match
 - `<card N>` Lovelace card configuration
@@ -163,6 +163,9 @@ If the `entity` parameter is set to `user`, which card is displayed will depend 
             content: >
               ## Unknown user
 ```
+
+### group
+`group` can take one of two values - `admin` or `user` depending on whether the currently logged in user is in the `Administrators` group or not.
 
 ### deviceID
 If the `entity` parameter is set to `deviceID`, which card is displayed will depend on the device-browser combination which is currently displaying the page.
