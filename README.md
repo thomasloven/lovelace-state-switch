@@ -37,7 +37,7 @@ When the state of `<entity>` is `<state 1>`, `<card 1>` will be displayed, when 
 If the state of `<entity>` doesn't match any `<state>`, the `<card>` for the `<default>` state will be displayed.
 
 ## Options
-- `<entity>` **Required** An entity id or `hash`, `user`, `group`, `deviceID`
+- `<entity>` **Required** An entity id or `hash`, `user`, `group`, `deviceID`, `mediaquery`
 - `<default>` State to use as default fallback
 - `<state N>` The state to match
 - `<card N>` Lovelace card configuration
@@ -184,6 +184,27 @@ See [browser_mod](https://github.com/thomasloven/hass-browser_mod#devices) for a
             type: markdown
             content: >
               Mobile
+```
+
+### mediaquery
+
+If the `entity` parameter is set to `mediaquery`, the card that is displays will be the first one that matches a [CSS @media rule](https://www.w3schools.com/cssref/css3_pr_mediaquery.asp).
+
+![Skärminspelning 2019-12-10 kl  21 18 12 mov](https://user-images.githubusercontent.com/1299821/70567314-028c1280-1b96-11ea-87d9-230387c75bc4.gif)
+
+```yaml
+type: custom:state-switch
+entity: mediaquery
+states:
+  "(min-width: 1000px)":
+    type: markdown
+    content: more than 1000 px
+  "(min-width: 500px)":
+    type: markdown
+    content: 500 to 1000 px
+  "all":
+    type: markdown
+    content: "Really small"
 ```
 
 ## A few tips
