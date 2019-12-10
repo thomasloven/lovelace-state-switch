@@ -27,7 +27,6 @@ class StateSwitch extends LitElement {
     }
     if(config.entity === 'mediaquery') {
       for(const q in this.cards) {
-        console.log("Register " + q);
         window.matchMedia(q).addEventListener("change", this.update_state.bind(this));
       }
     }
@@ -50,11 +49,8 @@ class StateSwitch extends LitElement {
         break;
       case "mediaquery":
         for(const q in this.cards) {
-          console.log("Check " + q);
-          console.log(window.matchMedia(q));
           if(window.matchMedia(q).matches) {
             newstate = q;
-            console.log(newstate);
             break;
           }
         }

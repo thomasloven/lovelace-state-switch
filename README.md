@@ -48,49 +48,49 @@ If the state of `<entity>` doesn't match any `<state>`, the `<card>` for the `<d
 If the `entity` parameter is set to an entity id, which card is displayed will depend on the state of that entity.
 
 ```yaml
-    cards:
-      - type: entities
-        entities:
-          - input_select.home_mode
-      - type: custom:state-switch
-        entity: input_select.home_mode
-        states:
-          Home:
-            type: vertical-stack
-            cards:
-              - type: entities
-                title: Lights
-                entities:
-                  - light.bed_light
-                  - light.ceiling_lights
-                  - light.kitchen_lights
-              - type: picture-glance
-                camera_image: camera.demo_camera
-                entities: []
-          Away:
-            type: alarm-panel
-            entity: alarm_control_panel.alarm
-          Guests:
-            type: glance
+cards:
+  - type: entities
+    entities:
+      - input_select.home_mode
+  - type: custom:state-switch
+    entity: input_select.home_mode
+    states:
+      Home:
+        type: vertical-stack
+        cards:
+          - type: entities
             title: Lights
             entities:
               - light.bed_light
               - light.ceiling_lights
               - light.kitchen_lights
+          - type: picture-glance
+            camera_image: camera.demo_camera
+            entities: []
+      Away:
+        type: alarm-panel
+        entity: alarm_control_panel.alarm
+      Guests:
+        type: glance
+        title: Lights
+        entities:
+          - light.bed_light
+          - light.ceiling_lights
+          - light.kitchen_lights
 ```
 
 Note that the words `on` and `off` are magic in yaml, so if the entity is e.g. a switch, you need to quote the keys in the `states:` mapping:
 
 ```yaml
-        states:
-          "on":
-            type: markdown
-            content:>
-              Light is on
-          "off":
-            type: markdown
-            content:>
-              Light is off
+states:
+  "on":
+    type: markdown
+    content:>
+      Light is on
+  "off":
+    type: markdown
+    content:>
+      Light is off
 ```
 
 ### hash
@@ -99,69 +99,67 @@ If the `entity` parameter is set to `hash`, which card is displayed will depend 
 This allows for controlling the view on a browser-window to browser-window basis, and without needing a controlling entity.
 
 ```yaml
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: entity-button
-            entity: light.my_dummy
-            tap_action:
-              action: navigate
-              navigation_path: "#p1"
-          - type: entity-button
-            entity: light.my_dummy
-            tap_action:
-              action: navigate
-              navigation_path: "#p2"
-          - type: entity-button
-            entity: light.my_dummy
-            tap_action:
-              action: navigate
-              navigation_path: "#p2"
-      - type: custom:state-switch
-        entity: hash
-        default: p1
-        states:
-          p1:
-            type: markdown
-            content: |
-              # Page 1
-          p2:
-            type: markdown
-            content: |
-              # Page 2
-          p3:
-            type: markdown
-            content: |
-              # Page 3
+type: horizontal-stack
+cards:
+  - type: entity-button
+    entity: light.my_dummy
+    tap_action:
+      action: navigate
+      navigation_path: "#p1"
+  - type: entity-button
+    entity: light.my_dummy
+    tap_action:
+      action: navigate
+      navigation_path: "#p2"
+  - type: entity-button
+    entity: light.my_dummy
+    tap_action:
+      action: navigate
+      navigation_path: "#p2"
+- type: custom:state-switch
+entity: hash
+default: p1
+states:
+  p1:
+    type: markdown
+    content: |
+      # Page 1
+  p2:
+    type: markdown
+    content: |
+      # Page 2
+  p3:
+    type: markdown
+    content: |
+      # Page 3
 ```
 
 ### user
 If the `entity` parameter is set to `user`, which card is displayed will depend on the currently logged in users username.
 
 ```yaml
-    cards:
-      - type: custom:state-switch
-        entity: user
-        default: default
-        states:
-          A:
-            type: entities
-            title: User A stuff
-            entities:
-              - light.bed_light
-              - light.ceiling_lights
-              - light.kitchen_lights
-          B:
-            type: glance
-            title: User B stuff
-            entities:
-              - light.bed_light
-              - light.ceiling_lights
-              - light.kitchen_lights
-          default:
-            type: markdown
-            content: >
-              ## Unknown user
+type: custom:state-switch
+entity: user
+default: default
+states:
+  A:
+    type: entities
+    title: User A stuff
+    entities:
+      - light.bed_light
+      - light.ceiling_lights
+      - light.kitchen_lights
+  B:
+    type: glance
+    title: User B stuff
+    entities:
+      - light.bed_light
+      - light.ceiling_lights
+      - light.kitchen_lights
+  default:
+    type: markdown
+    content: >
+      ## Unknown user
 ```
 
 ### group
@@ -173,17 +171,17 @@ If the `entity` parameter is set to `deviceID`, which card is displayed will dep
 See [browser_mod](https://github.com/thomasloven/hass-browser_mod#devices) for a description on how deviceIDs work.
 
 ```yaml
-      - type: custom:state-switch
-        entity: deviceID
-        states:
-          '9c2aaf6f-ed26e3c1':
-            type: markdown
-            content: >
-              Desktop
-          'c8a4981c-d69c5e3c':
-            type: markdown
-            content: >
-              Mobile
+type: custom:state-switch
+entity: deviceID
+states:
+  '9c2aaf6f-ed26e3c1':
+    type: markdown
+    content: >
+      Desktop
+  'c8a4981c-d69c5e3c':
+    type: markdown
+    content: >
+      Mobile
 ```
 
 ### mediaquery
