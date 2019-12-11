@@ -1,7 +1,8 @@
-import { LitElement, html } from "card-tools/src/lit-element";
+import { LitElement, html, css } from "card-tools/src/lit-element";
 import { hass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element";
 import { deviceID } from "card-tools/src/deviceID";
+import {fireEvent} from "card-tools/src/event.js";
 
 class StateSwitch extends LitElement {
 
@@ -72,13 +73,35 @@ class StateSwitch extends LitElement {
 
     if(!changedProperties.has("state")) {
       this.update_state();
+    } else {
+      const oldState = changedProperties.get("state");
+      if(this.cards[oldState]) {
+        this.cards[oldState].classList.remove("visible");
+        this.cards[oldState].classList.add("out");
+        window.setTimeout(() => {
+          this.cards[oldState].classList.remove("out");
+        }, this._config.transition_time || 500);
+      }
+      if(this.cards[this.state]) {
+        this.cards[this.state].classList.add("visible");
+      }
     }
   }
 
   render() {
     return html`
-    <div id="root">
-      ${this.cards[this.state]}
+    <div
+      id="root"
+      class="${this._config.transition}"
+      style="
+        transition-duration: ${this._config.transition_time || 500}ms;
+        transition-delay: ${this._config.transition_time || 500}ms;
+        "
+    >
+      ${Object.keys(this.cards).map((k) =>
+        html`
+          ${this.cards[k]}
+        `)}
     </div>
     `;
   }
@@ -92,6 +115,130 @@ class StateSwitch extends LitElement {
     return sz;
   }
 
+  static get styles() {
+    return css`
+      :host {
+        perspective: 1000px;
+      }
+      #root {
+        display: grid;
+      }
+      #root * {
+        display: none;
+        grid-column: 1;
+        grid-row: 1;
+      }
+      #root .visible {
+        display: block;
+      }
+
+
+      #root.slide-right *,
+      #root.slide-left * {
+        display: block;
+        opacity: 0;
+        height: 0;
+        transition-property: transform;
+        transition-timing-function: linear;
+        transition-duration: inherit;
+        transform: translate(-110%);
+      }
+      #root.slide-left * {
+        transform: translate(110%);
+      }
+      #root.slide-right .visible,
+      #root.slide-left .visible {
+        opacity: 1;
+        height: auto;
+        transform: translate(0%);
+      }
+      #root.slide-right .out,
+      #root.slide-left .out {
+        opacity: 1;
+        height: auto;
+        transform: translate(110%);
+      }
+      #root.slide-left .out {
+        transform: translate(-110%);
+      }
+
+
+      #root.swap-right *,
+      #root.swap-left * {
+        display: block;
+        opacity: 0;
+        height: 0;
+        transition-property: transform;
+        transition-timing-function: linear;
+        transition-duration: inherit;
+        transform: translate(110%);
+      }
+      #root.swap-left *{
+        transform: translate(-110%);
+      }
+      #root.swap-right .visible,
+      #root.swap-left .visible {
+        opacity: 1;
+        height: auto;
+        transition-delay: inherit;
+        transform: translate(0%);
+      }
+      #root.swap-right .out,
+      #root.swap-left .out {
+        opacity: 1;
+        height: auto;
+      }
+
+
+      #root.flip {
+        width: 100%;
+        height: 100%;
+        position: relative;
+
+      }
+      #root.flip * {
+        display: block;
+        opacity: 0;
+        height: 0;
+        transform: rotateY(-180deg);
+        transition-property: transform;
+        transition-timing-function: linear;
+        transition-duration: inherit;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        z-index: 100;
+      }
+      #root.flip .visible {
+        opacity: 1;
+        height: auto;
+        backface-visibility: hidden;
+        transform: rotateY(0deg);
+      }
+      #root.flip .out {
+        opacity: 1;
+        height: auto;
+        transform: rotateY(180deg);
+      }
+    `;
+  }
 }
 
 customElements.define("state-switch", StateSwitch);
+
+// Monkey patch hui-view to avoid scroll bars in columns
+customElements.whenDefined("hui-view").then( () => {
+const HuiView = customElements.get("hui-view").prototype;
+const oldRenderStyles = HuiView.renderStyles;
+HuiView.renderStyles = function() {
+  let original = oldRenderStyles();
+  original.strings = [original.strings[0] + `
+  <style>
+    .column {
+      overflow-y: hidden;
+    }
+  </style>
+  `];
+  return original;
+}
+fireEvent('ll-rebuild', {});
+});

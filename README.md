@@ -24,6 +24,8 @@ resources:
 type: custom:state-switch
 entity: <entity>
 default: <default>
+transition: <transition>
+transition_time: <transition_time>
 states:
   <state 1>:
     <card 1>
@@ -41,6 +43,8 @@ If the state of `<entity>` doesn't match any `<state>`, the `<card>` for the `<d
 - `<default>` State to use as default fallback
 - `<state N>` The state to match
 - `<card N>` Lovelace card configuration
+- `<transition>` Animated transition to use (`slide-left`, `slide-right`, `swap-left`, `swap_right` or `flip`). Default: `none`
+- `<transition_time>` The time for an animated transition in ms. Default: 500
 
 ## State matching
 
@@ -204,6 +208,12 @@ states:
     type: markdown
     content: "Really small"
 ```
+
+## Transitions
+The switch from one card to another can be animated by setting the `<transition>` option.
+The speed of the transition is set by `<transition_time>` (milliseconds). Note that some animations do two things, and thus take two times `<transition_time>` to complete.
+
+![jVbI15cMvT](https://user-images.githubusercontent.com/1299821/70644405-396c3200-1c43-11ea-95cb-c6ffa0b818f8.gif)
 
 ## A few tips
 
