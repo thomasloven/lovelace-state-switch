@@ -103,39 +103,39 @@ If the `entity` parameter is set to `hash`, which card is displayed will depend 
 This allows for controlling the view on a browser-window to browser-window basis, and without needing a controlling entity.
 
 ```yaml
-type: horizontal-stack
-cards:
-  - type: entity-button
-    entity: light.my_dummy
-    tap_action:
-      action: navigate
-      navigation_path: "#p1"
-  - type: entity-button
-    entity: light.my_dummy
-    tap_action:
-      action: navigate
-      navigation_path: "#p2"
-  - type: entity-button
-    entity: light.my_dummy
-    tap_action:
-      action: navigate
-      navigation_path: "#p2"
+- type: horizontal-stack
+  cards:
+    - type: entity-button
+      entity: light.my_dummy
+      tap_action:
+        action: navigate
+        navigation_path: "#p1"
+    - type: entity-button
+      entity: light.my_dummy
+      tap_action:
+        action: navigate
+        navigation_path: "#p2"
+    - type: entity-button
+      entity: light.my_dummy
+      tap_action:
+        action: navigate
+        navigation_path: "#p2"
 - type: custom:state-switch
-entity: hash
-default: p1
-states:
-  p1:
-    type: markdown
-    content: |
-      # Page 1
-  p2:
-    type: markdown
-    content: |
-      # Page 2
-  p3:
-    type: markdown
-    content: |
-      # Page 3
+  entity: hash
+  default: p1
+  states:
+    p1:
+      type: markdown
+      content: |
+        # Page 1
+    p2:
+      type: markdown
+      content: |
+        # Page 2
+    p3:
+      type: markdown
+      content: |
+        # Page 3
 ```
 
 ### user
