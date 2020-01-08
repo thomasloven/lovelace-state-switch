@@ -120,21 +120,22 @@ class StateSwitch extends LitElement {
       :host {
         perspective: 1000px;
       }
-      #root {
-        display: grid;
-      }
       #root * {
         display: none;
-        grid-column: 1;
-        grid-row: 1;
       }
       #root .visible {
         display: block;
       }
 
 
+      #root.slide-right,
+      #root.slide-left {
+        display: grid;
+      }
       #root.slide-right *,
       #root.slide-left * {
+        grid-column: 1;
+        grid-row: 1;
         display: block;
         opacity: 0;
         height: 0;
@@ -163,8 +164,14 @@ class StateSwitch extends LitElement {
       }
 
 
+      #root.swap-right,
+      #root.swap-left {
+        display: grid;
+      }
       #root.swap-right *,
       #root.swap-left * {
+        grid-column: 1;
+        grid-row: 1;
         display: block;
         opacity: 0;
         height: 0;
@@ -190,13 +197,16 @@ class StateSwitch extends LitElement {
       }
 
 
+
       #root.flip {
+        display: grid;
         width: 100%;
         height: 100%;
         position: relative;
-
       }
       #root.flip * {
+        grid-column: 1;
+        grid-row: 1;
         display: block;
         opacity: 0;
         height: 0;
@@ -226,7 +236,7 @@ class StateSwitch extends LitElement {
 customElements.define("state-switch", StateSwitch);
 
 // Monkey patch hui-view to avoid scroll bars in columns
-customElements.whenDefined("hui-view").then( () => {
+/*customElements.whenDefined("hui-view").then( () => {
 const HuiView = customElements.get("hui-view").prototype;
 const oldRenderStyles = HuiView.renderStyles;
 HuiView.renderStyles = function() {
@@ -241,4 +251,4 @@ HuiView.renderStyles = function() {
   return original;
 }
 fireEvent('ll-rebuild', {});
-});
+});*/
