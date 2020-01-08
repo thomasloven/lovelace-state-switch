@@ -29,7 +29,7 @@ class StateSwitch extends LitElement {
     }
     if(config.entity === 'mediaquery') {
       for(const q in this.cards) {
-        window.matchMedia(q).addEventListener("change", this.update_state.bind(this));
+        window.matchMedia(q).addListener(this.update_state.bind(this));
       }
     }
     if(config.entity === 'template') {
