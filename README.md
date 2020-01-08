@@ -209,6 +209,25 @@ states:
     content: "Really small"
 ```
 
+### template
+
+If the `entity` parameter is set to `template`, the card that is displayed will be the one that matches [jinja2 template](https://www.home-assistant.io/docs/configuration/templating/).
+
+```yaml
+type: custom:state-switch
+entity: template
+template: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
+states:
+  day:
+    type: markdown
+    content: Where do you want to go today?
+  night:
+    type: markdown
+    content: Sleep tight!
+```
+
+> Note: Jinja2 templating is not cheap. Avoid it for simple things that can be solved with just an entity.
+
 ## Transitions
 The switch from one card to another can be animated by setting the `<transition>` option.
 The speed of the transition is set by `<transition_time>` (milliseconds). Note that some animations do two things, and thus take two times `<transition_time>` to complete.

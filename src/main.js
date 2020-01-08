@@ -3,6 +3,7 @@ import { hass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element";
 import { deviceID } from "card-tools/src/deviceID";
 import {fireEvent} from "card-tools/src/event.js";
+import {subscribeRenderTemplate} from "card-tools/src/templates";
 
 class StateSwitch extends LitElement {
 
@@ -31,11 +32,29 @@ class StateSwitch extends LitElement {
         window.matchMedia(q).addEventListener("change", this.update_state.bind(this));
       }
     }
+    if(config.entity === 'template') {
+      const tmpl = config.template;
+      if(!String(tmpl).includes("{%") && !String(tmpl).includes("{{")) {
+        this._tmpl = tmpl;
+      } else {
+        subscribeRenderTemplate(null, (res) => {
+          this._tmpl = res;
+          this.update_state();
+        }, {
+          template: tmpl,
+          variables: {config},
+          entity_ids: config.entity_ids,
+        });
+      }
+    }
   }
 
   update_state() {
     let newstate = undefined;
     switch(this._config.entity) {
+      case "template":
+        newstate = this._tmpl;
+        break;
       case "user":
         newstate = this.hass && this.hass.user && this.hass.user.name || undefined;
         break;
