@@ -2,7 +2,6 @@ import { LitElement, html, css } from "card-tools/src/lit-element";
 import { hass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element";
 import { deviceID } from "card-tools/src/deviceID";
-import {fireEvent} from "card-tools/src/event.js";
 import {subscribeRenderTemplate} from "card-tools/src/templates";
 
 class StateSwitch extends LitElement {
