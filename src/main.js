@@ -102,6 +102,9 @@ class StateSwitch extends LitElement {
       }
       if(this.cards[this.state]) {
         this.cards[this.state].classList.add("visible");
+        this.classList.remove('no-match');
+      } else {
+        this.classList.add('no-match');
       }
     }
   }
@@ -137,6 +140,9 @@ class StateSwitch extends LitElement {
     return css`
       :host {
         perspective: 1000px;
+      }
+      :host(.no-match) {
+        display: none;
       }
       #root * {
         display: none;
