@@ -17,6 +17,7 @@ class StateSwitch extends LitElement {
     this._config = config;
 
     this.state = undefined;
+    this.classList.add('no-match');
     this.cards = {};
     for(let k in config.states) {
       this.cards[k] = createCard(config.states[k]);
