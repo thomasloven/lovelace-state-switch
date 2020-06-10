@@ -60,6 +60,7 @@ class StateSwitch extends LitElement {
         break;
       case "group":
         newstate = (this.hass && this.hass.user && this.hass.user.is_admin) ? "admin" : "user";
+        break;
       case "deviceID":
       case "browser":
         newstate = deviceID;
