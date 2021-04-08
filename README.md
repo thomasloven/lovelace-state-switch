@@ -139,7 +139,7 @@ This allows for controlling the view on a browser-window to browser-window basis
 ```
 
 ### user
-If the `entity` parameter is set to `user`, which card is displayed will depend on the currently logged in users username.
+If the `entity` parameter is set to `user`, which card is displayed will depend on the currently logged in users Display Name.
 
 ```yaml
 type: custom:state-switch
