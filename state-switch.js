@@ -302,7 +302,6 @@ class StateSwitch extends s {
       }
       #root {
         overflow: hidden;
-        xborder: 1px solid red;
         display: grid;
       }
       #root * {
@@ -402,8 +401,8 @@ class StateSwitch extends s {
       #root.flip,
       #root.flip-x,
       #root.flip-y {
-        width: 100%;
-        height: 100%;
+        xwidth: 100%;
+        xheight: 100%;
         position: relative;
         perspective: 1000px;
       }
