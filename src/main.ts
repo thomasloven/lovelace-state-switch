@@ -14,6 +14,7 @@ class StateSwitch extends LitElement {
   cards: Record<string, LovelaceCard>;
 
   async setConfig(config) {
+    (window as any).deviceID = deviceID;
     this._config = config;
 
     this.state = undefined;
@@ -303,6 +304,7 @@ class StateSwitch extends LitElement {
       #root.flip .out,
       #root.flip-x .out,
       #root.flip-y .out {
+        pointer-events: none;
         opacity: 1;
         height: auto;
         transform: rotate3d(0, 1, 0, 180deg);

@@ -164,6 +164,7 @@ class StateSwitch extends s {
         };
     }
     async setConfig(config) {
+        window.deviceID = deviceID;
         this._config = config;
         this.state = undefined;
         this.classList.add("no-match");
@@ -434,6 +435,7 @@ class StateSwitch extends s {
       #root.flip .out,
       #root.flip-x .out,
       #root.flip-y .out {
+        pointer-events: none;
         opacity: 1;
         height: auto;
         transform: rotate3d(0, 1, 0, 180deg);

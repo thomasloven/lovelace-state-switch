@@ -18,3 +18,13 @@ views:
       - type: entities
         entities:
           - light.bed_light
+      - type: custom:state-switch
+        entity: deviceID
+        default: default
+        states:
+          "c6f98e11-37f45470":
+            type: markdown
+            content: match
+          "default":
+            type: markdown
+            content: unknown
