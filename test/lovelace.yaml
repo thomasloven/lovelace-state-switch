@@ -1,45 +1,4 @@
 title: state-switch
 views:
-
-  - title: Test
-    panel: true
-    cards:
-      - type: vertical-stack
-        cards:
-          - type: entities
-            entities:
-              - light.bed_light
-          - type: horizontal-stack
-            cards:
-              - type: vertical-stack
-                cards:
-                  - type: markdown
-                    content: "# 1"
-                  - type: markdown
-                    content: "# 2"
-              - type: vertical-stack
-                cards:
-                  - type: markdown
-                    content: "# 1"
-                  - type: custom:state-switch
-                    entity: light.bed_light
-                    states:
-                      'on':
-                        type: markdown
-                        content: "# ON"
-                  - type: markdown
-                    content: "# 2"
-
-          - type: custom:state-switch
-            entity: group
-            default: default
-            states:
-              admin:
-                type: markdown
-                content: "# ADMIN"
-              user:
-                type: markdown
-                content: "# USER"
-              default:
-                type: markdown
-                content: "# DEFAULT"
+  - !include views/1-standard.yaml
+  - !include views/2-transitions.yaml

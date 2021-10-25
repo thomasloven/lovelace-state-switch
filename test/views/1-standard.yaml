@@ -1,0 +1,106 @@
+title: standard
+cards:
+  - type: entities
+    entities:
+      - light.bed_light
+      - input_number.input
+
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: "# Entity state"
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: markdown
+            content: Light is on
+          "off":
+            type: markdown
+            content: Light is off
+
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: "# Slider state"
+      - type: custom:state-switch
+        entity: input_number.input
+        default: more
+        states:
+          0.0:
+            type: markdown
+            content: None
+          1.0:
+            type: markdown
+            content: One
+          2.0:
+            type: markdown
+            content: Two
+          "more":
+            type: markdown
+            content: Many
+
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: "# Hash"
+      - type: horizontal-stack
+        cards:
+          - type: button
+            name: "#abc"
+            tap_action:
+              action: navigate
+              navigation_path: "#abc"
+          - type: button
+            name: "#def"
+            tap_action:
+              action: navigate
+              navigation_path: "#def"
+          - type: button
+            name: "none"
+            tap_action:
+              action: navigate
+              navigation_path: "#"
+      - type: custom:state-switch
+        entity: hash
+        states:
+          "abc":
+            type: markdown
+            content: Hash ABC
+          "def":
+            type: markdown
+            content: Hash DEF
+
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: "# Template"
+      - type: custom:state-switch
+        entity: template
+        template: |
+          {% if  states('input_number.input') | int > 3 %}
+            more
+          {% else %}
+            less
+          {% endif %}
+        states:
+          "more":
+            type: markdown
+            content: Slider is more than 3
+          "less":
+            type: markdown
+            content: Slider is less than 3
+
+  - type: custom:state-switch
+    entity: group
+    default: default
+    states:
+      admin:
+        type: markdown
+        content: "# ADMIN"
+      user:
+        type: markdown
+        content: "# USER"
+      default:
+        type: markdown
+        content: "# DEFAULT"

@@ -9,3 +9,8 @@ lovelace:
       mode: yaml
       title: yaml
       filename: test/lovelace.yaml
+
+input_number:
+  input:
+    min: 0
+    max: 5

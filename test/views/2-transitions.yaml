@@ -1,0 +1,72 @@
+title: transitions
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: button
+        icon: mdi:numeric-1
+        tap_action:
+          action: navigate
+          navigation_path: "#1"
+      - type: button
+        icon: mdi:numeric-2
+        tap_action:
+          action: navigate
+          navigation_path: "#2"
+      - type: button
+        icon: mdi:numeric-3
+        tap_action:
+          action: navigate
+          navigation_path: "#3"
+      - type: button
+        icon: mdi:numeric-4
+        tap_action:
+          action: navigate
+          navigation_path: "#4"
+
+  - type: vertical-stack
+    cards:
+      - <<: &cards
+          type: custom:state-switch
+          entity: hash
+          default: "none"
+          states:
+            "none":
+              type: markdown
+              content: "Start"
+              card-mod:
+                style: |
+                  ha-card { background: cyan; }
+            "1":
+              type: markdown
+              content: First card
+              card_mod:
+                style: |
+                  ha-card { background: purple; }
+            "2":
+              type: markdown
+              content: Other card
+              card_mod:
+                style: |
+                  ha-card { background: teal; }
+            "3":
+              type: markdown
+              content: Card three
+              card_mod:
+                style: |
+                  ha-card { background: magenta; }
+            "4":
+              type: markdown
+              content: FOUR
+              card_mod:
+                style: |
+                  ha-card { background: blue; }
+      - <<: *cards
+        transition: slide-right
+      - <<: *cards
+        transition: slide-left
+      - <<: *cards
+        transition: swap-left
+      - <<: *cards
+        transition: swap-left
+      - <<: *cards
+        transition: flip
