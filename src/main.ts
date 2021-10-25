@@ -36,6 +36,8 @@ class StateSwitch extends LitElement {
       const tmpl = hasTemplate(config.entity) ? config.entity : config.template;
       bind_template(this.templateRenderer, tmpl, { config });
     }
+
+    this.style.setProperty("display", "none");
   }
 
   templateRenderer = (tpl) => {
@@ -126,8 +128,10 @@ class StateSwitch extends LitElement {
       if (this.cards[this.state]) {
         this.cards[this.state].classList.add("visible");
         this.classList.remove("no-match");
+        this.style.setProperty("display", "");
       } else {
         this.classList.add("no-match");
+        this.style.setProperty("display", "none");
       }
     }
   }
@@ -311,21 +315,3 @@ class StateSwitch extends LitElement {
 }
 
 customElements.define("state-switch", StateSwitch as any);
-
-// Monkey patch hui-view to avoid scroll bars in columns
-/*customElements.whenDefined("hui-view").then( () => {
-const HuiView = customElements.get("hui-view").prototype;
-const oldRenderStyles = HuiView.renderStyles;
-HuiView.renderStyles = function() {
-  let original = oldRenderStyles();
-  original.strings = [original.strings[0] + `
-  <style>
-    .column {
-      overflow-y: hidden;
-    }
-  </style>
-  `];
-  return original;
-}
-fireEvent('ll-rebuild', {});
-});*/

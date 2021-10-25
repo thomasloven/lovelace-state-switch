@@ -181,6 +181,7 @@ class StateSwitch extends s {
             const tmpl = hasTemplate(config.entity) ? config.entity : config.template;
             bind_template(this.templateRenderer, tmpl, { config });
         }
+        this.style.setProperty("display", "none");
     }
     connectedCallback() {
         super.connectedCallback();
@@ -259,9 +260,11 @@ class StateSwitch extends s {
             if (this.cards[this.state]) {
                 this.cards[this.state].classList.add("visible");
                 this.classList.remove("no-match");
+                this.style.setProperty("display", "");
             }
             else {
                 this.classList.add("no-match");
+                this.style.setProperty("display", "none");
             }
         }
     }
@@ -454,20 +457,3 @@ __decorate([
     e()
 ], StateSwitch.prototype, "_tmpl", void 0);
 customElements.define("state-switch", StateSwitch);
-// Monkey patch hui-view to avoid scroll bars in columns
-/*customElements.whenDefined("hui-view").then( () => {
-const HuiView = customElements.get("hui-view").prototype;
-const oldRenderStyles = HuiView.renderStyles;
-HuiView.renderStyles = function() {
-  let original = oldRenderStyles();
-  original.strings = [original.strings[0] + `
-  <style>
-    .column {
-      overflow-y: hidden;
-    }
-  </style>
-  `];
-  return original;
-}
-fireEvent('ll-rebuild', {});
-});*/

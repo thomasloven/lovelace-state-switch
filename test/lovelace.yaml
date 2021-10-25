@@ -2,3 +2,19 @@ title: state-switch
 views:
   - !include views/1-standard.yaml
   - !include views/2-transitions.yaml
+  - title: test
+    cards:
+      - type: entities
+        entities:
+          - light.bed_light
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: vertical-stack
+            cards:
+              - type: markdown
+                content: "ON"
+      - type: entities
+        entities:
+          - light.bed_light
