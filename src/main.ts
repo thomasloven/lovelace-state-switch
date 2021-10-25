@@ -1,35 +1,25 @@
-import { LitElement, html, css } from "card-tools/src/lit-element";
-import { hass } from "card-tools/src/hass";
-import { createCard } from "card-tools/src/lovelace-element";
+import { LitElement, html, css } from "lit";
+import { property } from "lit/decorators.js";
 import { deviceID } from "card-tools/src/deviceID";
 import { subscribeRenderTemplate } from "card-tools/src/templates";
+import { HassObject, LovelaceCard, StateSwitchConfig } from "./types";
 
 class StateSwitch extends LitElement {
-  _config;
-  state;
-  classList;
-  cards;
+  @property() _config: StateSwitchConfig;
+  @property() hass: HassObject;
+  @property() state;
+
+  cards: Record<string, LovelaceCard>;
   _tmpl;
-  hass;
 
-  static get properties() {
-    return {
-      hass: {},
-      state: {},
-    };
-  }
-
-  setConfig(config) {
+  async setConfig(config) {
     this._config = config;
-    console.log(config);
 
     this.state = undefined;
     this.classList.add("no-match");
     this.cards = {};
-    for (let k in config.states) {
-      this.cards[k] = createCard(config.states[k]);
-      this.cards[k].hass = hass();
-    }
+
+    this.buildCards();
 
     if (config.entity === "hash") {
       window.addEventListener("location-changed", () =>
@@ -62,6 +52,15 @@ class StateSwitch extends LitElement {
     }
   }
 
+  async buildCards() {
+    const helpers = await (window as any).loadCardHelpers();
+    for (let k in this._config.states) {
+      this.cards[k] = await helpers.createCardElement(this._config.states[k]);
+      this.cards[k].hass = this.hass;
+    }
+    this.update_state();
+  }
+
   update_state() {
     let newstate = undefined;
     switch (this._config.entity) {
@@ -69,14 +68,10 @@ class StateSwitch extends LitElement {
         newstate = this._tmpl;
         break;
       case "user":
-        newstate =
-          (this.hass && this.hass.user && this.hass.user.name) || undefined;
+        newstate = this.hass?.user?.name;
         break;
       case "group":
-        newstate =
-          this.hass && this.hass.user && this.hass.user.is_admin
-            ? "admin"
-            : "user";
+        newstate = this.hass?.user?.is_admin ? "admin" : "user";
         break;
       case "deviceID":
       case "browser":
@@ -94,8 +89,7 @@ class StateSwitch extends LitElement {
         }
         break;
       default:
-        newstate = this.hass.states[this._config.entity];
-        newstate = newstate ? newstate.state : undefined;
+        newstate = this.hass?.states[this._config.entity]?.state;
     }
 
     if (newstate === undefined || !this.cards.hasOwnProperty(newstate))
@@ -145,7 +139,7 @@ class StateSwitch extends LitElement {
   getCardSize() {
     let sz = 1;
     for (let k in this.cards) {
-      if (this.cards[k] && this.cards[k].getCardSize)
+      if (this.cards[k]?.getCardSize)
         sz = Math.max(sz, this.cards[k].getCardSize());
     }
     return sz;
@@ -158,6 +152,10 @@ class StateSwitch extends LitElement {
       }
       :host(.no-match) {
         display: none;
+      }
+      #root {
+        overflow-x: hidden;
+        xborder: 1px solid red;
       }
       #root * {
         display: none;
