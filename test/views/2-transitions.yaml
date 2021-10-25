@@ -1,5 +1,9 @@
 title: transitions
 cards:
+  - type: entities
+    entities:
+      - light.bed_light
+      - input_number.input
   - type: horizontal-stack
     cards:
       - type: button

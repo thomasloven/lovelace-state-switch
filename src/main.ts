@@ -1,16 +1,17 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { deviceID } from "card-tools/src/deviceID";
-import { subscribeRenderTemplate } from "card-tools/src/templates";
+import { hasTemplate } from "card-tools/src/templates";
+import { bind_template, unbind_template } from "./templates";
 import { HassObject, LovelaceCard, StateSwitchConfig } from "./types";
 
 class StateSwitch extends LitElement {
   @property() _config: StateSwitchConfig;
   @property() hass: HassObject;
   @property() state;
+  @property() _tmpl;
 
   cards: Record<string, LovelaceCard>;
-  _tmpl;
 
   async setConfig(config) {
     this._config = config;
@@ -31,25 +32,35 @@ class StateSwitch extends LitElement {
         window.matchMedia(q).addListener(this.update_state.bind(this));
       }
     }
-    if (config.entity === "template") {
-      const tmpl = config.template;
-      if (!String(tmpl).includes("{%") && !String(tmpl).includes("{{")) {
-        this._tmpl = tmpl;
-      } else {
-        subscribeRenderTemplate(
-          null,
-          (res) => {
-            this._tmpl = res;
-            this.update_state();
-          },
-          {
-            template: tmpl,
-            variables: { config },
-            entity_ids: config.entity_ids,
-          }
-        );
-      }
+    if (config.entity === "template" || hasTemplate(config.entity)) {
+      const tmpl = hasTemplate(config.entity) ? config.entity : config.template;
+      bind_template(this.templateRenderer, tmpl, { config });
     }
+  }
+
+  templateRenderer = (tpl) => {
+    this._tmpl = tpl;
+  };
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (!this._config) return;
+    if (
+      this._config.entity === "template" ||
+      hasTemplate(this._config.entity)
+    ) {
+      bind_template(
+        this.templateRenderer,
+        hasTemplate(this._config.entity)
+          ? this._config.entity
+          : this._config.template,
+        { config: this._config }
+      );
+    }
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    unbind_template(this.templateRenderer);
   }
 
   async buildCards() {

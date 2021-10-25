@@ -94,40 +94,75 @@ function hass() {
   return undefined;
 }
 
-function subscribeRenderTemplate(conn, onChange, params, stringify=true) {
-  // params = {template, entity_ids, variables}
-  if(!conn)
-    conn = hass().connection;
-  let variables = {
-    user: hass().user.name,
-    browser: deviceID,
-    hash: location.hash.substr(1) || ' ',
-    ...params.variables,
-  };
-  let template = params.template;
-  let entity_ids = params.entity_ids;
+function hasTemplate(str) {
+  if(String(str).includes("{%"))
+    return true;
+  if(String(str).includes("{{"))
+    return true;
+}
 
-  return conn.subscribeMessage(
-    (msg) => {
-      if(stringify) {
-        let res = String(msg.result);
-        // Localize "_(key)" if found in template results
-        const localize_function = /_\([^)]*\)/g;
-        res = res.replace(localize_function, (key) => hass().localize(key.substring(2, key.length-1)) || key);
-        onChange(res);
-      } else {
-        onChange(msg.result);
-      }
-    },
-    { type: "render_template",
-      template,
-      variables,
-      entity_ids,
+window.cardMod_template_cache =
+    window.cardMod_template_cache || {};
+const cachedTemplates = window
+    .cardMod_template_cache;
+function template_updated(key, result) {
+    const cache = cachedTemplates[key];
+    if (!cache) {
+        return;
     }
-  );
+    cache.value = result.result;
+    cache.callbacks.forEach((f) => f(result.result));
+}
+async function bind_template(callback, template, variables) {
+    const connection = hass().connection;
+    const cacheKey = JSON.stringify([template, variables]);
+    let cache = cachedTemplates[cacheKey];
+    if (!cache) {
+        unbind_template(callback);
+        callback("");
+        variables = Object.assign({ user: hass().user.name, browser: deviceID, hash: location.hash.substr(1) || "" }, variables);
+        cachedTemplates[cacheKey] = cache = {
+            template,
+            variables,
+            value: "",
+            callbacks: new Set([callback]),
+            unsubscribe: connection.subscribeMessage((result) => template_updated(cacheKey, result), {
+                type: "render_template",
+                template,
+                variables,
+            }),
+        };
+    }
+    else {
+        if (!cache.callbacks.has(callback))
+            unbind_template(callback);
+        callback(cache.value);
+        cache.callbacks.add(callback);
+    }
+}
+async function unbind_template(callback) {
+    let unsubscriber;
+    for (const [key, cache] of Object.entries(cachedTemplates)) {
+        if (cache.callbacks.has(callback)) {
+            cache.callbacks.delete(callback);
+            if (cache.callbacks.size == 0) {
+                unsubscriber = cache.unsubscribe;
+                delete cachedTemplates[key];
+            }
+            break;
+        }
+    }
+    if (unsubscriber)
+        await (await unsubscriber)();
 }
 
 class StateSwitch extends s {
+    constructor() {
+        super(...arguments);
+        this.templateRenderer = (tpl) => {
+            this._tmpl = tpl;
+        };
+    }
     async setConfig(config) {
         this._config = config;
         this.state = undefined;
@@ -142,22 +177,25 @@ class StateSwitch extends s {
                 window.matchMedia(q).addListener(this.update_state.bind(this));
             }
         }
-        if (config.entity === "template") {
-            const tmpl = config.template;
-            if (!String(tmpl).includes("{%") && !String(tmpl).includes("{{")) {
-                this._tmpl = tmpl;
-            }
-            else {
-                subscribeRenderTemplate(null, (res) => {
-                    this._tmpl = res;
-                    this.update_state();
-                }, {
-                    template: tmpl,
-                    variables: { config },
-                    entity_ids: config.entity_ids,
-                });
-            }
+        if (config.entity === "template" || hasTemplate(config.entity)) {
+            const tmpl = hasTemplate(config.entity) ? config.entity : config.template;
+            bind_template(this.templateRenderer, tmpl, { config });
         }
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        if (!this._config)
+            return;
+        if (this._config.entity === "template" ||
+            hasTemplate(this._config.entity)) {
+            bind_template(this.templateRenderer, hasTemplate(this._config.entity)
+                ? this._config.entity
+                : this._config.template, { config: this._config });
+        }
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        unbind_template(this.templateRenderer);
     }
     async buildCards() {
         const helpers = await window.loadCardHelpers();
@@ -379,6 +417,9 @@ __decorate([
 __decorate([
     e()
 ], StateSwitch.prototype, "state", void 0);
+__decorate([
+    e()
+], StateSwitch.prototype, "_tmpl", void 0);
 customElements.define("state-switch", StateSwitch);
 // Monkey patch hui-view to avoid scroll bars in columns
 /*customElements.whenDefined("hui-view").then( () => {

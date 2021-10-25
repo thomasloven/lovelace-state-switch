@@ -3,6 +3,8 @@ export interface StateSwitchConfig {
   default?: string;
   states: Record<string, any>;
 
+  template?: string;
+
   transition: string;
   transition_time: number;
 }
