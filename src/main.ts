@@ -2,9 +2,15 @@ import { LitElement, html, css } from "card-tools/src/lit-element";
 import { hass } from "card-tools/src/hass";
 import { createCard } from "card-tools/src/lovelace-element";
 import { deviceID } from "card-tools/src/deviceID";
-import {subscribeRenderTemplate} from "card-tools/src/templates";
+import { subscribeRenderTemplate } from "card-tools/src/templates";
 
 class StateSwitch extends LitElement {
+  _config;
+  state;
+  classList;
+  cards;
+  _tmpl;
+  hass;
 
   static get properties() {
     return {
@@ -15,51 +21,62 @@ class StateSwitch extends LitElement {
 
   setConfig(config) {
     this._config = config;
+    console.log(config);
 
     this.state = undefined;
-    this.classList.add('no-match');
+    this.classList.add("no-match");
     this.cards = {};
-    for(let k in config.states) {
+    for (let k in config.states) {
       this.cards[k] = createCard(config.states[k]);
       this.cards[k].hass = hass();
     }
 
-    if(config.entity === 'hash') {
-      window.addEventListener("location-changed", () => this.updated(new Map()));
+    if (config.entity === "hash") {
+      window.addEventListener("location-changed", () =>
+        this.updated(new Map())
+      );
     }
-    if(config.entity === 'mediaquery') {
-      for(const q in this.cards) {
+    if (config.entity === "mediaquery") {
+      for (const q in this.cards) {
         window.matchMedia(q).addListener(this.update_state.bind(this));
       }
     }
-    if(config.entity === 'template') {
+    if (config.entity === "template") {
       const tmpl = config.template;
-      if(!String(tmpl).includes("{%") && !String(tmpl).includes("{{")) {
+      if (!String(tmpl).includes("{%") && !String(tmpl).includes("{{")) {
         this._tmpl = tmpl;
       } else {
-        subscribeRenderTemplate(null, (res) => {
-          this._tmpl = res;
-          this.update_state();
-        }, {
-          template: tmpl,
-          variables: {config},
-          entity_ids: config.entity_ids,
-        });
+        subscribeRenderTemplate(
+          null,
+          (res) => {
+            this._tmpl = res;
+            this.update_state();
+          },
+          {
+            template: tmpl,
+            variables: { config },
+            entity_ids: config.entity_ids,
+          }
+        );
       }
     }
   }
 
   update_state() {
     let newstate = undefined;
-    switch(this._config.entity) {
+    switch (this._config.entity) {
       case "template":
         newstate = this._tmpl;
         break;
       case "user":
-        newstate = this.hass && this.hass.user && this.hass.user.name || undefined;
+        newstate =
+          (this.hass && this.hass.user && this.hass.user.name) || undefined;
         break;
       case "group":
-        newstate = (this.hass && this.hass.user && this.hass.user.is_admin) ? "admin" : "user";
+        newstate =
+          this.hass && this.hass.user && this.hass.user.is_admin
+            ? "admin"
+            : "user";
         break;
       case "deviceID":
       case "browser":
@@ -69,8 +86,8 @@ class StateSwitch extends LitElement {
         newstate = location.hash.substr(1);
         break;
       case "mediaquery":
-        for(const q in this.cards) {
-          if(window.matchMedia(q).matches) {
+        for (const q in this.cards) {
+          if (window.matchMedia(q).matches) {
             newstate = q;
             break;
           }
@@ -87,52 +104,48 @@ class StateSwitch extends LitElement {
   }
 
   updated(changedProperties) {
-    if(changedProperties.has("hass"))
-      for(let k in this.cards)
-        this.cards[k].hass = this.hass;
+    if (changedProperties.has("hass"))
+      for (let k in this.cards) this.cards[k].hass = this.hass;
 
-    if(!changedProperties.has("state")) {
+    if (!changedProperties.has("state")) {
       this.update_state();
     } else {
       const oldState = changedProperties.get("state");
-      if(this.cards[oldState]) {
+      if (this.cards[oldState]) {
         this.cards[oldState].classList.remove("visible");
         this.cards[oldState].classList.add("out");
         window.setTimeout(() => {
           this.cards[oldState].classList.remove("out");
         }, this._config.transition_time || 500);
       }
-      if(this.cards[this.state]) {
+      if (this.cards[this.state]) {
         this.cards[this.state].classList.add("visible");
-        this.classList.remove('no-match');
+        this.classList.remove("no-match");
       } else {
-        this.classList.add('no-match');
+        this.classList.add("no-match");
       }
     }
   }
 
   render() {
     return html`
-    <div
-      id="root"
-      class="${this._config.transition}"
-      style="
+      <div
+        id="root"
+        class="${this._config.transition}"
+        style="
         transition-duration: ${this._config.transition_time || 500}ms;
         transition-delay: ${this._config.transition_time || 500}ms;
         "
-    >
-      ${Object.keys(this.cards).map((k) =>
-        html`
-          ${this.cards[k]}
-        `)}
-    </div>
+      >
+        ${Object.keys(this.cards).map((k) => html` ${this.cards[k]} `)}
+      </div>
     `;
   }
 
   getCardSize() {
     let sz = 1;
-    for(let k in this.cards) {
-      if(this.cards[k] && this.cards[k].getCardSize)
+    for (let k in this.cards) {
+      if (this.cards[k] && this.cards[k].getCardSize)
         sz = Math.max(sz, this.cards[k].getCardSize());
     }
     return sz;
@@ -152,7 +165,6 @@ class StateSwitch extends LitElement {
       #root .visible {
         display: block;
       }
-
 
       #root.slide-right,
       #root.slide-left {
@@ -189,7 +201,6 @@ class StateSwitch extends LitElement {
         transform: translate(-110%);
       }
 
-
       #root.swap-right,
       #root.swap-left {
         display: grid;
@@ -206,7 +217,7 @@ class StateSwitch extends LitElement {
         transition-duration: inherit;
         transform: translate(110%);
       }
-      #root.swap-left *{
+      #root.swap-left * {
         transform: translate(-110%);
       }
       #root.swap-right .visible,
@@ -221,8 +232,6 @@ class StateSwitch extends LitElement {
         opacity: 1;
         height: auto;
       }
-
-
 
       #root.flip {
         display: grid;
@@ -259,7 +268,7 @@ class StateSwitch extends LitElement {
   }
 }
 
-customElements.define("state-switch", StateSwitch);
+customElements.define("state-switch", StateSwitch as any);
 
 // Monkey patch hui-view to avoid scroll bars in columns
 /*customElements.whenDefined("hui-view").then( () => {
