@@ -283,12 +283,12 @@ class StateSwitch extends s {
       </div>
     `;
     }
-    getCardSize() {
+    async getCardSize() {
         var _a;
         let sz = 1;
         for (let k in this.cards) {
             if ((_a = this.cards[k]) === null || _a === void 0 ? void 0 : _a.getCardSize)
-                sz = Math.max(sz, this.cards[k].getCardSize());
+                sz = Math.max(sz, await this.cards[k].getCardSize());
         }
         return sz;
     }

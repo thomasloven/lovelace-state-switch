@@ -152,11 +152,11 @@ class StateSwitch extends LitElement {
     `;
   }
 
-  getCardSize() {
+  async getCardSize() {
     let sz = 1;
     for (let k in this.cards) {
       if (this.cards[k]?.getCardSize)
-        sz = Math.max(sz, this.cards[k].getCardSize());
+        sz = Math.max(sz, await this.cards[k].getCardSize());
     }
     return sz;
   }
