@@ -65,12 +65,22 @@ cards:
                 style: |
                   ha-card { background: blue; }
       - <<: *cards
-        transition: slide-right
+        transition: slide-down
+      - <<: *cards
+        transition: slide-up
       - <<: *cards
         transition: slide-left
       - <<: *cards
-        transition: swap-left
+        transition: slide-right
+      - <<: *cards
+        transition: swap-down
+      - <<: *cards
+        transition: swap-up
       - <<: *cards
         transition: swap-left
       - <<: *cards
-        transition: flip
+        transition: swap-right
+      - <<: *cards
+        transition: flip-x
+      - <<: *cards
+        transition: flip-y

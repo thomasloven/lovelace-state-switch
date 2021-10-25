@@ -165,96 +165,119 @@ class StateSwitch extends LitElement {
         display: none;
       }
       #root {
-        overflow-x: hidden;
+        overflow: hidden;
         xborder: 1px solid red;
+        display: grid;
       }
       #root * {
         display: none;
+        grid-column: 1;
+        grid-row: 1;
       }
       #root .visible {
         display: block;
       }
 
-      #root.slide-right,
-      #root.slide-left {
-        display: grid;
-      }
-      #root.slide-right *,
-      #root.slide-left * {
-        grid-column: 1;
-        grid-row: 1;
+      #root.slide-down *,
+      #root.slide-up *,
+      #root.slide-left *,
+      #root.slide-right * {
         display: block;
         opacity: 0;
         height: 0;
         transition-property: transform;
         transition-timing-function: linear;
         transition-duration: inherit;
-        transform: translate(-110%);
+        transform: translate(0, -110%);
+      }
+      #root.slide-up * {
+        transform: translate(0, 110%);
       }
       #root.slide-left * {
-        transform: translate(110%);
+        transform: translate(110%, 0);
       }
-      #root.slide-right .visible,
-      #root.slide-left .visible {
+      #root.slide-right * {
+        transform: translate(-110%, 0);
+      }
+      #root.slide-down .visible,
+      #root.slide-up .visible,
+      #root.slide-left .visible,
+      #root.slide-right .visible {
         opacity: 1;
         height: auto;
         transform: translate(0%);
       }
-      #root.slide-right .out,
-      #root.slide-left .out {
+      #root.slide-down .out,
+      #root.slide-up .out,
+      #root.slide-left .out,
+      #root.slide-right .out {
         opacity: 1;
         height: auto;
-        transform: translate(110%);
+        transform: translate(0, 110%);
+      }
+      #root.slide-up .out {
+        transform: translate(0, -110%);
       }
       #root.slide-left .out {
         transform: translate(-110%);
       }
-
-      #root.swap-right,
-      #root.swap-left {
-        display: grid;
+      #root.slide-right .out {
+        transform: translate(110%);
       }
-      #root.swap-right *,
-      #root.swap-left * {
-        grid-column: 1;
-        grid-row: 1;
+
+      #root.swap-down *,
+      #root.swap-up *,
+      #root.swap-left *,
+      #root.swap-right * {
         display: block;
         opacity: 0;
         height: 0;
         transition-property: transform;
         transition-timing-function: linear;
         transition-duration: inherit;
-        transform: translate(110%);
+        transform: translate(0, 110%);
+      }
+      #root.swap-up * {
+        transform: translate(0, -110%);
       }
       #root.swap-left * {
-        transform: translate(-110%);
+        transform: translate(-110%, 0);
       }
-      #root.swap-right .visible,
-      #root.swap-left .visible {
+      #root.swap-right * {
+        transform: translate(110%, 0);
+      }
+      #root.swap-down .visible,
+      #root.swap-up .visible,
+      #root.swap-left .visible,
+      #root.swap-right .visible {
         opacity: 1;
         height: auto;
         transition-delay: inherit;
         transform: translate(0%);
       }
-      #root.swap-right .out,
-      #root.swap-left .out {
+      #root.swap-down .out,
+      #root.swap-up .out,
+      #root.swap-left .out,
+      #root.swap-right .out {
         opacity: 1;
         height: auto;
       }
 
-      #root.flip {
-        display: grid;
+      #root.flip,
+      #root.flip-x,
+      #root.flip-y {
         width: 100%;
         height: 100%;
         position: relative;
+        perspective: 1000px;
       }
-      #root.flip * {
-        grid-column: 1;
-        grid-row: 1;
+      #root.flip *,
+      #root.flip-x *,
+      #root.flip-y * {
         display: block;
         opacity: 0;
         height: 0;
-        transform: rotateY(-180deg);
+        transform: rotate3d(0, 1, 0, -180deg);
         transition-property: transform;
         transition-timing-function: linear;
         transition-duration: inherit;
@@ -262,16 +285,26 @@ class StateSwitch extends LitElement {
         backface-visibility: hidden;
         z-index: 100;
       }
-      #root.flip .visible {
+      #root.flip-y * {
+        transform: rotate3d(1, 0, 0, -180deg);
+      }
+      #root.flip .visible,
+      #root.flip-x .visible,
+      #root.flip-y .visible {
         opacity: 1;
         height: auto;
         backface-visibility: hidden;
-        transform: rotateY(0deg);
+        transform: rotate3d(0, 0, 0, 0deg);
       }
-      #root.flip .out {
+      #root.flip .out,
+      #root.flip-x .out,
+      #root.flip-y .out {
         opacity: 1;
         height: auto;
-        transform: rotateY(180deg);
+        transform: rotate3d(0, 1, 0, 180deg);
+      }
+      #root.flip-y .out {
+        transform: rotate3d(1, 0, 0, 180deg);
       }
     `;
   }
