@@ -4,6 +4,7 @@ import { deviceID } from "card-tools/src/deviceID";
 import { hasTemplate } from "card-tools/src/templates";
 import { bind_template, unbind_template } from "./templates";
 import { HassObject, LovelaceCard, StateSwitchConfig } from "./types";
+import pjson from "../package.json";
 
 class StateSwitch extends LitElement {
   @property() _config: StateSwitchConfig;
@@ -316,4 +317,11 @@ class StateSwitch extends LitElement {
   }
 }
 
-customElements.define("state-switch", StateSwitch as any);
+if (!customElements.get("state-switch")) {
+  customElements.define("state-switch", StateSwitch);
+  console.info(
+    `%cSTATE-SWITCH ${pjson.version} IS INSTALLED`,
+    "color: green; font-weight: bold",
+    ""
+  );
+}
