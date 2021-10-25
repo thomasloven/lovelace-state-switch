@@ -26,6 +26,7 @@ class StateSwitch extends LitElement {
       window.addEventListener("location-changed", () =>
         this.updated(new Map())
       );
+      window.addEventListener("hashchange", () => this.updated(new Map()));
     }
     if (config.entity === "mediaquery") {
       for (const q in this.cards) {

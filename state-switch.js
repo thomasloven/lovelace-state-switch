@@ -171,6 +171,7 @@ class StateSwitch extends s {
         this.buildCards();
         if (config.entity === "hash") {
             window.addEventListener("location-changed", () => this.updated(new Map()));
+            window.addEventListener("hashchange", () => this.updated(new Map()));
         }
         if (config.entity === "mediaquery") {
             for (const q in this.cards) {
