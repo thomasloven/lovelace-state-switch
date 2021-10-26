@@ -7,6 +7,32 @@ views:
       - type: entities
         entities:
           - light.bed_light
+          - light.kitchen_lights
+      - type: horizontal-stack
+        cards:
+          - type: button
+            icon: mdi:numeric-1
+            tap_action:
+              action: navigate
+              navigation_path: "#1"
+          - type: button
+            icon: mdi:numeric-2
+            tap_action:
+              action: navigate
+              navigation_path: "#2"
+      - type: custom:state-switch
+        entity: hash
+        transition: flip
+        states:
+          "1":
+            type: entities
+            entities:
+              - light.bed_light
+          "2":
+            type: entities
+            entities:
+              - light.kitchen_lights
+
       - type: custom:state-switch
         entity: light.bed_light
         states:

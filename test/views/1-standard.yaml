@@ -104,3 +104,15 @@ cards:
       default:
         type: markdown
         content: "# DEFAULT"
+  - type: custom:state-switch
+    entity: mediaquery
+    states:
+      "(min-width: 1000px)":
+        type: markdown
+        content: more than 1000 px
+      "(min-width: 500px)":
+        type: markdown
+        content: 500 to 1000 px
+      all:
+        type: markdown
+        content: Really small

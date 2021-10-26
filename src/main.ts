@@ -8,11 +8,12 @@ import pjson from "../package.json";
 
 class StateSwitch extends LitElement {
   @property() _config: StateSwitchConfig;
-  @property() hass: HassObject;
+  @property() _hass: HassObject;
   @property() state;
   @property() _tmpl;
 
   cards: Record<string, LovelaceCard>;
+  _mqs: MediaQueryList[];
 
   async setConfig(config) {
     (window as any).deviceID = deviceID;
@@ -31,8 +32,9 @@ class StateSwitch extends LitElement {
       window.addEventListener("hashchange", () => this.updated(new Map()));
     }
     if (config.entity === "mediaquery") {
-      for (const q in this.cards) {
-        window.matchMedia(q).addListener(this.update_state.bind(this));
+      for (const q in config.states) {
+        const mq = window.matchMedia(q);
+        mq.addEventListener("change", () => this.update_state());
       }
     }
     if (config.entity === "template" || hasTemplate(config.entity)) {
@@ -50,6 +52,7 @@ class StateSwitch extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     if (!this._config) return;
+    for (const k in this.cards) this.cards[k].hass = this._hass;
     if (
       this._config.entity === "template" ||
       hasTemplate(this._config.entity)
@@ -72,7 +75,7 @@ class StateSwitch extends LitElement {
     const helpers = await (window as any).loadCardHelpers();
     for (let k in this._config.states) {
       this.cards[k] = await helpers.createCardElement(this._config.states[k]);
-      this.cards[k].hass = this.hass;
+      this.cards[k].hass = this._hass;
     }
     this.update_state();
   }
@@ -84,10 +87,10 @@ class StateSwitch extends LitElement {
         newstate = this._tmpl;
         break;
       case "user":
-        newstate = this.hass?.user?.name;
+        newstate = this._hass?.user?.name;
         break;
       case "group":
-        newstate = this.hass?.user?.is_admin ? "admin" : "user";
+        newstate = this._hass?.user?.is_admin ? "admin" : "user";
         break;
       case "deviceID":
       case "browser":
@@ -105,7 +108,7 @@ class StateSwitch extends LitElement {
         }
         break;
       default:
-        newstate = this.hass?.states[this._config.entity]?.state;
+        newstate = this._hass?.states[this._config.entity]?.state;
     }
 
     if (newstate === undefined || !this.cards.hasOwnProperty(newstate))
@@ -113,20 +116,24 @@ class StateSwitch extends LitElement {
     this.state = newstate;
   }
 
-  updated(changedProperties) {
-    if (changedProperties.has("hass"))
-      for (let k in this.cards) this.cards[k].hass = this.hass;
+  set hass(hass) {
+    this._hass = hass;
+    for (const k in this.cards) this.cards[k].hass = hass;
+  }
 
+  updated(changedProperties) {
     if (!changedProperties.has("state")) {
       this.update_state();
     } else {
       const oldState = changedProperties.get("state");
       if (this.cards[oldState]) {
         this.cards[oldState].classList.remove("visible");
-        this.cards[oldState].classList.add("out");
-        window.setTimeout(() => {
-          this.cards[oldState].classList.remove("out");
-        }, this._config.transition_time || 500);
+        if (this._config.transition) {
+          this.cards[oldState].classList.add("out");
+          window.setTimeout(() => {
+            this.cards[oldState].classList.remove("out");
+          }, this._config.transition_time || 500);
+        }
       }
       if (this.cards[this.state]) {
         this.cards[this.state].classList.add("visible");
@@ -156,7 +163,7 @@ class StateSwitch extends LitElement {
 
   async getCardSize() {
     let sz = 1;
-    for (let k in this.cards) {
+    for (const k in this.cards) {
       if (this.cards[k]?.getCardSize)
         sz = Math.max(sz, await this.cards[k].getCardSize());
     }
@@ -174,23 +181,21 @@ class StateSwitch extends LitElement {
       #root {
         overflow: hidden;
         display: grid;
+        grid-template-rows: auto 0px;
       }
       #root * {
-        display: none;
         grid-column: 1;
-        grid-row: 1;
+        grid-row: 2;
       }
-      #root .visible {
-        display: block;
+      #root *.visible,
+      #root *.out {
+        grid-row: 1;
       }
 
       #root.slide-down *,
       #root.slide-up *,
       #root.slide-left *,
       #root.slide-right * {
-        display: block;
-        opacity: 0;
-        height: 0;
         transition-property: transform;
         transition-timing-function: linear;
         transition-duration: inherit;
@@ -209,16 +214,9 @@ class StateSwitch extends LitElement {
       #root.slide-up .visible,
       #root.slide-left .visible,
       #root.slide-right .visible {
-        opacity: 1;
-        height: auto;
         transform: translate(0%);
       }
-      #root.slide-down .out,
-      #root.slide-up .out,
-      #root.slide-left .out,
-      #root.slide-right .out {
-        opacity: 1;
-        height: auto;
+      #root.slide-down .out {
         transform: translate(0, 110%);
       }
       #root.slide-up .out {
@@ -235,9 +233,6 @@ class StateSwitch extends LitElement {
       #root.swap-up *,
       #root.swap-left *,
       #root.swap-right * {
-        display: block;
-        opacity: 0;
-        height: 0;
         transition-property: transform;
         transition-timing-function: linear;
         transition-duration: inherit;
@@ -256,33 +251,19 @@ class StateSwitch extends LitElement {
       #root.swap-up .visible,
       #root.swap-left .visible,
       #root.swap-right .visible {
-        opacity: 1;
-        height: auto;
         transition-delay: inherit;
         transform: translate(0%);
-      }
-      #root.swap-down .out,
-      #root.swap-up .out,
-      #root.swap-left .out,
-      #root.swap-right .out {
-        opacity: 1;
-        height: auto;
       }
 
       #root.flip,
       #root.flip-x,
       #root.flip-y {
-        xwidth: 100%;
-        xheight: 100%;
         position: relative;
         perspective: 1000px;
       }
       #root.flip *,
       #root.flip-x *,
       #root.flip-y * {
-        display: block;
-        opacity: 0;
-        height: 0;
         transform: rotate3d(0, 1, 0, -180deg);
         transition-property: transform;
         transition-timing-function: linear;
@@ -297,8 +278,6 @@ class StateSwitch extends LitElement {
       #root.flip .visible,
       #root.flip-x .visible,
       #root.flip-y .visible {
-        opacity: 1;
-        height: auto;
         backface-visibility: hidden;
         transform: rotate3d(0, 0, 0, 0deg);
       }
@@ -306,8 +285,6 @@ class StateSwitch extends LitElement {
       #root.flip-x .out,
       #root.flip-y .out {
         pointer-events: none;
-        opacity: 1;
-        height: auto;
         transform: rotate3d(0, 1, 0, 180deg);
       }
       #root.flip-y .out {
