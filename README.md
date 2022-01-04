@@ -221,7 +221,8 @@ If the `entity` parameter is a string that contains a [jinja template](https://w
 
 ```yaml
 type: custom:state-switch
-entity: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
+entity: template
+template: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
 states:
   day:
     type: markdown
