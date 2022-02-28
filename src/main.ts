@@ -106,7 +106,7 @@ class StateSwitch extends LitElement {
         newstate = deviceID;
         break;
       case "hash":
-        newstate = location.hash.substr(1);
+        newstate = location.hash.substring(1);
         break;
       case "mediaquery":
         for (const q in this.cards) {
@@ -117,7 +117,11 @@ class StateSwitch extends LitElement {
         }
         break;
       default:
-        newstate = this._hass?.states[this._config.entity]?.state;
+        if (hasTemplate(this._config.entity)) {
+          newstate = this._tmpl;
+        } else {
+          newstate = this._hass?.states[this._config.entity]?.state;
+        }
     }
 
     if (newstate === undefined || !this.cards.hasOwnProperty(newstate))

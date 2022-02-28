@@ -90,6 +90,20 @@ cards:
           "less":
             type: markdown
             content: Slider is less than 3
+      - type: custom:state-switch
+        entity: |
+          {% if  states('input_number.input') | int > 3 %}
+            more
+          {% else %}
+            less
+          {% endif %}
+        states:
+          "more":
+            type: markdown
+            content: Slider is more than 3
+          "less":
+            type: markdown
+            content: Slider is less than 3
 
   - type: custom:state-switch
     entity: group
