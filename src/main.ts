@@ -150,9 +150,15 @@ class StateSwitch extends LitElement {
       if (this.cards[oldState]) {
         this.cards[oldState].classList.remove("visible");
         if (this._config.transition) {
+          this.shadowRoot.querySelector("#root").classList.add("transition");
           this.cards[oldState].classList.add("out");
           window.setTimeout(() => {
             this.cards[oldState].classList.remove("out");
+            window.setTimeout(() => {
+              this.shadowRoot
+                .querySelector("#root")
+                .classList.remove("transition");
+            }, this._config.transition_time || 500);
           }, this._config.transition_time || 500);
         }
       }
@@ -198,17 +204,23 @@ class StateSwitch extends LitElement {
       #root {
         margin: -4px;
         padding: 4px;
-        overflow: hidden;
         display: grid;
         grid-template-rows: auto 0px;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      #root.transition {
+        overflow-y: hidden;
       }
       #root * {
         grid-column: 1;
         grid-row: 2;
+        overflow: hidden;
       }
       #root *.visible,
       #root *.out {
         grid-row: 1;
+        overflow: visible;
       }
 
       #root.slide-down *,
