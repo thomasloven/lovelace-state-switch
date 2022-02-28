@@ -1,0 +1,33 @@
+title: Layouts
+cards:
+  - type: entities
+    entities:
+      - light.bed_light
+  - type: grid
+    cards:
+      - type: markdown
+        content: Left
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: markdown
+            content: Middle
+      - type: markdown
+        content: right
+  - type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 100
+      reflows: true
+    cards:
+      - type: markdown
+        content: Left
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: markdown
+            content: Middle
+      - type: markdown
+        content: Right

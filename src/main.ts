@@ -81,6 +81,7 @@ class StateSwitch extends LitElement {
     }
     this.cardsInitialized = true;
     this.update_state();
+    this._updateVisibility();
   }
 
   update_state() {
@@ -129,6 +130,18 @@ class StateSwitch extends LitElement {
     for (const k in this.cards) this.cards[k].hass = hass;
   }
 
+  _updateVisibility() {
+    if (this.cards[this.state]) {
+      this.classList.remove("no-match");
+      this.style.setProperty("display", "");
+      this.removeAttribute("hidden");
+    } else {
+      this.classList.add("no-match");
+      this.style.setProperty("display", "none");
+      this.setAttribute("hidden", "");
+    }
+  }
+
   updated(changedProperties) {
     if (!changedProperties.has("state")) {
       this.update_state();
@@ -145,12 +158,8 @@ class StateSwitch extends LitElement {
       }
       if (this.cards[this.state]) {
         this.cards[this.state].classList.add("visible");
-        this.classList.remove("no-match");
-        this.style.setProperty("display", "");
-      } else {
-        this.classList.add("no-match");
-        this.style.setProperty("display", "none");
       }
+      this._updateVisibility();
     }
   }
 

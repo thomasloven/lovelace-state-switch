@@ -2,6 +2,7 @@ title: state-switch
 views:
   - !include views/1-standard.yaml
   - !include views/2-transitions.yaml
+  - !include views/3-layouts.yaml
   - title: test
     cards:
       - type: entities
