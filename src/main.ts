@@ -187,6 +187,8 @@ class StateSwitch extends LitElement {
         display: none;
       }
       #root {
+        margin: -4px;
+        padding: 4px;
         overflow: hidden;
         display: grid;
         grid-template-rows: auto 0px;
