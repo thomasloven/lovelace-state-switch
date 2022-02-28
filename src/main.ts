@@ -12,7 +12,7 @@ class StateSwitch extends LitElement {
   @property() state;
   @property() _tmpl;
 
-  #cardsInitialized = false;
+  cardsInitialized = false;
 
   cards: Record<string, LovelaceCard>;
   _mqs: MediaQueryList[];
@@ -79,13 +79,13 @@ class StateSwitch extends LitElement {
       this.cards[k] = await helpers.createCardElement(this._config.states[k]);
       this.cards[k].hass = this._hass;
     }
-    this.#cardsInitialized = true;
+    this.cardsInitialized = true;
     this.update_state();
   }
 
   update_state() {
     // skip state update when cards have not been fully initialized yet
-    if (!this.#cardsInitialized) {
+    if (!this.cardsInitialized) {
       return;
     }
 
