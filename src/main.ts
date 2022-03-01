@@ -210,16 +210,16 @@ class StateSwitch extends LitElement {
         padding: 4px;
         display: grid;
         grid-template-rows: auto 0px;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: clip visible;
       }
       #root.transition {
-        overflow-y: hidden;
+        overflow: hidden;
       }
       #root * {
         grid-column: 1;
         grid-row: 2;
         overflow: hidden;
+        min-width: 0;
       }
       #root *.visible,
       #root *.out {

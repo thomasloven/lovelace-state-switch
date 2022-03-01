@@ -1,7 +1,7 @@
 {
   "name": "state-switch",
   "private": true,
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "state-switch =================",
   "scripts": {
     "build": "rollup -c",
