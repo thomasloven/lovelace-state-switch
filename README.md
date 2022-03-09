@@ -244,7 +244,6 @@ states:
   night:
     type: markdown
     content: Sleep tight!
-
 ```
 
 > Note: Jinja2 templating is not cheap. Avoid it for simple things that can be solved with just an entity.
