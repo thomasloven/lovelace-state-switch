@@ -8,7 +8,7 @@ Dynamically replace lovelace cards depending on occasion.
 
 > Note in the animation above that the two browser windows have two different users logged in, which changes the rightmost card.
 
-For installation instructions [see this guide](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins).
+For installation instructions, see [this guide](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins).
 
 Install `state-switch.js` as a `module`.
 
@@ -196,7 +196,7 @@ states:
 
 ### mediaquery
 
-If the `entity` parameter is set to `mediaquery`, the card that is displays will be the first one that matches a [CSS @media rule](https://www.w3schools.com/cssref/css3_pr_mediaquery.asp).
+If the `entity` parameter is set to `mediaquery`, the card that is displayed will be the first one that matches a [CSS @media rule](https://www.w3schools.com/cssref/css3_pr_mediaquery.asp).
 
 ![Skärminspelning 2019-12-10 kl  21 18 12 mov](https://user-images.githubusercontent.com/1299821/70567314-028c1280-1b96-11ea-87d9-230387c75bc4.gif)
 
@@ -217,11 +217,12 @@ states:
 
 ### template
 
-If the `entity` parameter is a string that contains a [jinja template](https://www.home-assistant.io/docs/configuration/templating/), the card that is displayed will be the one that matches the templates result.
+If the `entity` parameter is set to `template`, the card that is displayed will be the one that matches the [jinja template](https://www.home-assistant.io/docs/configuration/templating/)'s result.
 
 ```yaml
 type: custom:state-switch
-entity: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
+entity: template
+template: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
 states:
   day:
     type: markdown
