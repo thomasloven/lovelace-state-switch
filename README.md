@@ -232,6 +232,21 @@ states:
     content: Sleep tight!
 ```
 
+You may also simply define the `entity` parameter as a jinja template string.
+
+```
+type: custom:state-switch
+entity: "{% if is_state('switch.night_mode', 'on') and now().weekday() < 5 %} day {% else %} night {% endif %}"
+states:
+  day:
+    type: markdown
+    content: Where do you want to go today?
+  night:
+    type: markdown
+    content: Sleep tight!
+
+```
+
 > Note: Jinja2 templating is not cheap. Avoid it for simple things that can be solved with just an entity.
 
 ## Transitions
