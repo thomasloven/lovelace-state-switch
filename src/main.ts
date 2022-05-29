@@ -152,12 +152,12 @@ class StateSwitch extends LitElement {
     } else {
       const oldState = changedProperties.get("state");
       if (this.cards[oldState]) {
-        this.cards[oldState].classList.remove("visible");
+        this.cards[oldState].parentElement.classList.remove("visible");
         if (this._config.transition) {
           this.shadowRoot.querySelector("#root").classList.add("transition");
-          this.cards[oldState].classList.add("out");
+          this.cards[oldState].parentElement.classList.add("out");
           window.setTimeout(() => {
-            this.cards[oldState].classList.remove("out");
+            this.cards[oldState].parentElement.classList.remove("out");
             window.setTimeout(() => {
               this.shadowRoot
                 .querySelector("#root")
@@ -167,7 +167,7 @@ class StateSwitch extends LitElement {
         }
       }
       if (this.cards[this.state]) {
-        this.cards[this.state].classList.add("visible");
+        this.cards[this.state].parentElement.classList.add("visible");
       }
       this._updateVisibility();
     }
@@ -183,7 +183,9 @@ class StateSwitch extends LitElement {
         transition-delay: ${this._config.transition_time || 500}ms;
         "
       >
-        ${Object.keys(this.cards).map((k) => html` ${this.cards[k]} `)}
+        ${Object.keys(this.cards).map(
+          (k) => html` <div>${this.cards[k]}</div> `
+        )}
       </div>
     `;
   }
@@ -218,7 +220,7 @@ class StateSwitch extends LitElement {
       #root * {
         grid-column: 1;
         grid-row: 2;
-        overflow: hidden;
+        overflow: hidden !important;
         min-width: 0;
       }
       #root *.visible,
