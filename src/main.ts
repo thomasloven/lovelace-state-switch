@@ -220,7 +220,7 @@ class StateSwitch extends LitElement {
       #root * {
         grid-column: 1;
         grid-row: 2;
-        overflow: hidden !important;
+        overflow: hidden;
         min-width: 0;
       }
       #root *.visible,
