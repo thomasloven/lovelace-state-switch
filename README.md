@@ -268,6 +268,21 @@ Available transitions are:
 
 ![jVbI15cMvT](https://user-images.githubusercontent.com/1299821/70644405-396c3200-1c43-11ea-95cb-c6ffa0b818f8.gif)
 
+## Including files
+
+Syntax: `!include <filepath>`
+
+Segregate data into included files. For example:
+```
+type: custom:state-switch
+entity: input_select.highlow
+states:
+  statehigh:
+    !include state-high.yaml
+  statelow:
+    !include state-low.yaml
+```    
+Note: only one `!include` statement may be specified for each state.
 ## A few tips
 
 - To replace more than one card at a time, use e.g. [`vertical-stack`](https://www.home-assistant.io/lovelace/vertical-stack/), [`horizontal-stack`](https://www.home-assistant.io/lovelace/horizontal-stack/) or [`layout-card`](https://github.com/thomasloven/lovelace-layout-card).
