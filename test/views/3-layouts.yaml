@@ -15,6 +15,30 @@ cards:
             content: Middle
       - type: markdown
         content: right
+  - type: horizontal-stack
+    cards:
+      - type: markdown
+        content: Left
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: markdown
+            content: Middle
+      - type: markdown
+        content: right
+  - type: vertical-stack
+    cards:
+      - type: markdown
+        content: Left
+      - type: custom:state-switch
+        entity: light.bed_light
+        states:
+          "on":
+            type: markdown
+            content: Middle
+      - type: markdown
+        content: right
   - type: custom:layout-card
     layout_type: custom:horizontal-layout
     layout:

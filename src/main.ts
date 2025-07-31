@@ -7,6 +7,7 @@ import { HassObject, LovelaceCard, StateSwitchConfig } from "./types";
 import pjson from "../package.json";
 
 class StateSwitch extends LitElement {
+  connectedWhileHidden = true;
   @property() _config: StateSwitchConfig;
   @property() _hass: HassObject;
   @property() state;
@@ -144,6 +145,9 @@ class StateSwitch extends LitElement {
       this.style.setProperty("display", "none");
       this.setAttribute("hidden", "");
     }
+    this.dispatchEvent(
+      new Event("card-visibility-changed", { bubbles: true, cancelable: true })
+    );
   }
 
   updated(changedProperties) {
